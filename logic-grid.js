@@ -30,56 +30,38 @@ return null;
 };
 
 var loadRoomData = function(room_name){
-    $.ajax({
-        url: api_url + 'rpg/getroom?room=' + encodeURIComponent(room_name),
-        success:  function(ret){
-            map.version = ret.data.room_data.updated_at;
-            map.layers = ret.data.room_data.data;
-            if (map.layers._cols) {
-                map.cols = parseInt(map.layers._cols);
-            }
-            if (map.layers._rows) {
-                map.rows = parseInt(map.layers._rows);
-            }
-            if (Game.camera) {
-                Game.camera.maxX = map.cols * map.tsize - Game.camera.width;
-                Game.camera.maxY = map.rows * map.tsize - Game.camera.height;
-            }
-            Game.objects = {};
-            $('#object-list').html('');
-            ret.data.objects.map(function(o) {
-                if ('undefined' === typeof(o.data)) {
-                    return;
-                }
-                if (null === o.data) {
-                    return;
-                }
-                var text = `${o.object_id}.[${o.data.type}]`;
-                if (o.data.type == 'npc') {
-                    text += o.data.data.name;
-                } else if (o.data.type == 'image') {
-                    text += o.data.data.image_url.substr(0, 10) + '...';
-                }
-
-                var li_dom = $('<li></li>').text(text).attr('title', JSON.stringify(o.data)).data('id', o.object_id);
-                li_dom.append($('<button type="button">EDIT</button>').addClass('button-edit-object'));
-                li_dom.append($('<button type="button">DELETE</button>').addClass('button-delete-object'));
-                $('#object-list').append(li_dom);
-                if (null !== o.data) {
-                    Game.objects[o.object_id] = o.data;
-                }
-            });
-
-            $('#object-count').text(ret.data.objects.length).data(ret.data.objects);
-            calculateWallLayer();
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            $.get('room.json', function(room) {
-                map.layers = room;
-                calculateWallLayer();
-            }, 'json');
+    $.get('room.json', function(room) {
+        map.layers = room.layers || room;
+        if (map.layers._cols) {
+            map.cols = parseInt(map.layers._cols);
         }
-    });
+        if (map.layers._rows) {
+            map.rows = parseInt(map.layers._rows);
+        }
+        if (Game.camera) {
+            Game.camera.maxX = map.cols * map.tsize - Game.camera.width;
+            Game.camera.maxY = map.rows * map.tsize - Game.camera.height;
+        }
+        Game.objects = {};
+        $('#object-list').html('');
+        (room.objects || []).map(function(o) {
+            if (!o.data) {
+                return;
+            }
+            var text = `${o.object_id}.[${o.data.type}]`;
+            if (o.data.type == 'npc') {
+                text += o.data.data.name;
+            } else if (o.data.type == 'image') {
+                text += o.data.data.image_url.substr(0, 10) + '...';
+            }
+            var li_dom = $('<li></li>').text(text).attr('title', JSON.stringify(o.data)).data('id', o.object_id);
+            li_dom.append($('<button type="button">EDIT</button>').addClass('button-edit-object'));
+            li_dom.append($('<button type="button">DELETE</button>').addClass('button-delete-object'));
+            $('#object-list').append(li_dom);
+            Game.objects[o.object_id] = o.data;
+        });
+        calculateWallLayer();
+    }, 'json');
 };
 
 function Camera(map, width, height) {

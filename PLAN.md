@@ -96,7 +96,8 @@ hero.image             載入好的 HTMLImageElement
 
 ## NPC 與場景物件（後端 API）
 
-- NPC / 圖片 / iframe 物件由另一個後端管理：`https://meet.jothon.online/api/rpg/`
+- NPC / 圖片 / iframe 物件**讀取**：直接從 `room.json` 載入（`objects` 陣列）
+- NPC / 圖片 / iframe 物件**寫入**（管理員功能）：仍呼叫 `https://meet.jothon.online/api/rpg/`（`addobject` / `updateobject` / `deleteobject`）
 - 端點：
   - `GET  rpg/getroom?room=swonline` — 取得地圖資料與物件列表
   - `POST rpg/addobject?room=swonline` — 新增物件
@@ -129,7 +130,8 @@ NPC 的 `say` 欄位以換行分隔多則訊息；`$people` 會被替換成目�
 
 ## 已知限制 / 未來可改進方向
 
-- `common.js:2` 的 `api_url` 目前指向 `https://meet.jothon.online/api/`，若該服務下線，NPC 與場景物件將無法管理（但地圖本身仍可由 `room.json` fallback 顯示）
+- 地圖與物件（NPC/圖片/iframe）的讀取已完全改用本地 `room.json`，不再依賴 `meet.jothon.online`；若需更新場景，手動抓 API 資料再覆蓋 `room.json`
+- `common.js:2` 的 `api_url` 仍保留，僅供 `index.html` 管理面板的 add/update/delete 物件操作與 `map-editor.html` 使用；若該服務下線，地圖顯示不受影響，只有管理員編輯功能會失效
 - WebSocket 斷線後無自動重連機制，目前只顯示 alert
 - 聊天歷史只在進入房間時載入一次（最多 100 筆），之後不會補載
 - `map-editor.html` 有自己的一套 NPC/物件編輯邏輯，與 `index.html` 部分重複

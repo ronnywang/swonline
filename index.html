@@ -223,7 +223,11 @@ body {
 			</div>
         </div>
         <div class="panel-tab" id="panel-tab-chat" style="display: none">
-            <textarea class="w-100 h-100 form-control" id="chat" readonly="readonly"></textarea>
+            <textarea class="w-100 form-control" id="chat" readonly="readonly" style="flex:1;min-height:0;resize:none"></textarea>
+            <form id="say-form" style="flex:0;display:flex;margin-top:4px" autocomplete="off">
+                <input type="text" id="say" class="form-control form-control-sm" placeholder="輸入訊息..." maxlength="100">
+                <button type="submit" class="btn btn-sm btn-primary ml-1">送出</button>
+            </form>
         </div>
         <div class="panel-tab" id="panel-tab-member" style="display: none">
             <ul id="member-list"></ul>
@@ -677,6 +681,16 @@ $('button.action-emoji').click(function(e){
         room.sendTextMessage(emoji);
         Game.heroes.me.messages.push([emoji, (new Date).getTime() + 20 * 1000]);
     }
+});
+
+$('#say-form').submit(function(e){
+    e.preventDefault();
+    var text = $('#say').val().trim();
+    if (!text || !room) return;
+    room.sendTextMessage(text);
+    Game.heroes.me.messages.push([text, (new Date).getTime() + 20 * 1000]);
+    if (Game.heroes.me.messages.length > 3) Game.heroes.me.messages.shift();
+    $('#say').val('');
 });
 
 $('body').keydown(function(e){

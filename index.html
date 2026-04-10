@@ -201,7 +201,13 @@ body {
         </form>
 </div></div></div>
 <div class="card" id="controller">
-    <div class="card-header">昇瑋線上追思會: <span id="member-count">0</span>人上線</div>
+    <div class="card-header">昇瑋線上追思會: <span id="member-count">0</span>人上線
+        <ul class="nav nav-tabs card-header-tabs mt-1">
+            <li class="nav-item" id="nav-tab-info"><a class="nav-link active" href="#">資訊</a></li>
+            <li class="nav-item" id="nav-tab-chat"><a class="nav-link" href="#">聊天</a></li>
+            <li class="nav-item" id="nav-tab-member"><a class="nav-link" href="#">成員</a></li>
+        </ul>
+    </div>
         <form id="joined-form" style="flex: 0; display:none;padding:.25em" autocomplete="off">
             <button class="btn btn-sm btn-outline-secondary action-emoji" type="button">❤️</button>
             <button class="btn btn-sm btn-outline-secondary action-emoji" type="button">🙏</button>

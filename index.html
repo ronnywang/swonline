@@ -65,13 +65,12 @@ body {
     z-index: 20;
 }
 
-#controller .panel-heading {
-    flex: 1;
-}
-#controller .panel-body {
+#controller .card-body {
     display: flex;
     flex-direction: column;
-    flex-grow: 100;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
 }
 .panel-tab {
     height: 100%;
@@ -308,7 +307,7 @@ body {
         $('.nav-item').click(function(e){
                 e.preventDefault();
                 $('.panel-tab').hide();
-                $('#panel-tab-' + $(this).attr('id').split('-')[2]).show();
+                $('#panel-tab-' + $(this).attr('id').split('-')[2]).css('display', 'flex');
                 $('.nav-item .nav-link').removeClass('active');
                 $(this).find('.nav-link').addClass('active');
         });
